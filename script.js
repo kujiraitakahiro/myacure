@@ -8,20 +8,28 @@ function addDrink() {
   const drink = document.createElement('div');
   drink.classList.add('drink');
   drink.style.backgroundImage = `url(${drinkImages[Math.floor(Math.random() * drinkImages.length)]})`;
-  drink.style.left = `${Math.random() * 250}px`; // 自動販売機内のランダムな位置に配置
-  drink.style.top = `${100 + Math.random() * 250}px`; // 自動販売機内のランダムな位置に配置
+  drink.style.left = `${Math.random() * 250}px`;
+  drink.style.top = `${100 + Math.random() * 250}px`;
 
   jihanki.appendChild(drink);
 
-  // クリックイベント (ドラッグ&ドロップも可能)
-  drink.addEventListener('mousedown', (event) => {
-    drink.style.position = 'fixed'; // ドリンクを固定
-    drink.style.left = event.clientX - 25 + 'px'; // マウスカーソルに追従
-    drink.style.top = event.clientY - 25 + 'px'; // マウスカーソルに追従
+  // ドラッグアンドドロップ機能
+  drink.draggable = true;
+
+  drink.addEventListener('dragstart', (event) => {
+    event.dataTransfer.setData('text/plain', drink.id);
   });
-  document.addEventListener('mouseup', () => {
-    drink.style.position = 'absolute'; // ドリンクを元の位置に戻す
-    // ドリンクをランダムな位置に戻す処理も追加可能
+
+  drink.addEventListener('dragover', (event) => {
+    event.preventDefault();
+  });
+
+  drink.addEventListener('drop', (event) => {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text/plain');
+    const target = document.getElementById(data);
+    target.style.left = event.clientX - 25 + 'px';
+    target.style.top = event.clientY - 25 + 'px';
   });
 }
 
